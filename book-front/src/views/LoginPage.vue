@@ -24,7 +24,7 @@
                     </el-input>
                 </div>
                 <el-row>
-                    <el-col :span="12" style="text-align: left">
+                    <el-col :span="12" style="text-align: left;">
                         <el-checkbox v-model="form.remember_me">记住我</el-checkbox>
                     </el-col>
                     <el-col :span="12" style="text-align: right">
@@ -36,7 +36,7 @@
                 </div>
             </el-form>
             <div class="tips">
-                <el-divider><span>没有账号?<el-link>立即注册</el-link></span></el-divider>
+                <el-divider><span @click="router.push('/register')">没有账号?<el-link>立即注册</el-link></span></el-divider>
             </div>
         </div>
     </div>
