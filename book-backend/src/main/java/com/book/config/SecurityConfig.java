@@ -6,7 +6,6 @@ import com.book.service.AuthService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -41,7 +41,8 @@ public class SecurityConfig {
                         .successHandler(this::onSuccess)
                         .failureHandler(this::onFailure)
                 )
-                .logout((logout) -> logout.logoutUrl("/api/auth/logout"))
+                .logout((logout) -> logout.logoutUrl("/api/auth/logout")
+                        .logoutSuccessHandler(this::onSuccess))
                 .csrf(AbstractHttpConfigurer::disable)
                 .userDetailsService(authService)
                 .cors((cors) -> cors.configurationSource(this.configurationSource()))
@@ -52,9 +53,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    PersistentTokenRepository tokenRepository(@Autowired DataSource dataSource) {
+    PersistentTokenRepository tokenRepository(DataSource dataSource) {
         JdbcTokenRepositoryImpl repository = new JdbcTokenRepositoryImpl();
-        repository.setCreateTableOnStartup(true);
+//        repository.setCreateTableOnStartup(true);
         repository.setDataSource(dataSource);
         return repository;
     }
@@ -83,7 +84,12 @@ public class SecurityConfig {
     }
 
     private void onSuccess(HttpServletRequest request, HttpServletResponse response, Authentication auth) throws IOException {
-        response.setCharacterEncoding("utf-8");
-        response.getWriter().write(JSON.toJSONString(RestBean.success("登录成功")));
+        if (request.getRequestURL().toString().endsWith("/logout")) {
+            response.setCharacterEncoding("utf-8");
+            response.getWriter().write(JSON.toJSONString(RestBean.success("退出登录成功")));
+        } else if (request.getRequestURL().toString().endsWith("/login")) {
+            response.setCharacterEncoding("utf-8");
+            response.getWriter().write(JSON.toJSONString(RestBean.success("登录成功")));
+        }
     }
 }
