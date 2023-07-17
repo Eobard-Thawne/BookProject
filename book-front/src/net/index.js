@@ -22,7 +22,7 @@ function post(url, data, success, failure = defaultFailure, error = defaultError
 }
 
 function get(url, success, failure = defaultFailure, error = defaultError) {
-    axios.get(url, {
+    axios.get(BASE_URL + url, {
         withCredentials: true
     }).then(({data}) => {
         if (data.success) {
