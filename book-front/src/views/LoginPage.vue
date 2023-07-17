@@ -6,7 +6,7 @@
         <div class="loginForm">
             <el-form :model="form">
                 <div class="userNameInput">
-                    <el-input v-model="form.username" placeholder="用户名">
+                    <el-input v-model="form.username" placeholder="用户名或邮箱">
                         <template #prefix>
                             <el-icon>
                                 <User/>
