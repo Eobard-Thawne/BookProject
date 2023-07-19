@@ -18,6 +18,9 @@ public class AuthService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = userMapper.findUserByUserName(username);
+        if (account == null) {
+            throw new UsernameNotFoundException("用户" + username + "不存在");
+        }
         return User
                 .withUsername(account.getUsername())
                 .password(account.getPassword())
